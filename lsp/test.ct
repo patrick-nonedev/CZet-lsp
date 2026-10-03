@@ -1,0 +1,39 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
+/* test.ct — ejemplo para probar el LSP y los highlights. */
+#include <stdio.h>
+#include <utils/str.h>
+
+constexpr int fact(int n) {
+    int r = 1;
+    for (int i = 1; i <= n; i++) r *= i;
+    return r;
+}
+
+struct box<T, U> { T a; U b; };
+
+T sum<T>(T a, T b) { return a + b; }
+
+struct Vec2 { int x, y; };
+struct Vec2 _Operator(struct Vec2, "+") {
+    struct Vec2 r; r.x = a->x + b->x; r.y = a->y + b->y; return r;
+}
+
+_Macro LIST<$t: ident, $($x: expr),*> {
+  (LIST $t , $($x),*) { int $t[] = { $($x),* }; }
+};
+
+int main(void) {
+    constexpr int f5 = fact(5);
+    struct box<int, double> b; b.a = 7; b.b = 2.5;
+    int s = sum<int>(10, 32);
+    reflect_t r = _Reflect(struct box<int, double>);
+    (void)r;
+    struct Vec2 a = {1, 2}, c;
+    c = a + a;
+    LIST<xs, 1, 2, 3>
+    defer { printf("sale f5=%d s=%d\n", f5, s); };
+    struct str st; str_init(&st);
+    str_push_cstr(&st, "hola");
+    printf("%s\n", str_cstr(&st));
+    return 0;
+}

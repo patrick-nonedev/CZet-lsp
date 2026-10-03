@@ -1,0 +1,184 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "CZet",
+  "scopeName": "source.czet",
+  "fileTypes": ["ct", "czet"],
+  "patterns": [
+    { "include": "#comments" },
+    { "include": "#preprocessor" },
+    { "include": "#strings" },
+    { "include": "#czet-keywords" },
+    { "include": "#macro-def" },
+    { "include": "#reflect-op" },
+    { "include": "#types" },
+    { "include": "#utils" },
+    { "include": "#numbers" },
+    { "include": "#functions" }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.double-slash.czet",
+          "match": "//.*$"
+        },
+        {
+          "name": "comment.block.czet",
+          "begin": "/\\*",
+          "end": "\\*/"
+        }
+      ]
+    },
+    "preprocessor": {
+      "patterns": [
+        {
+          "name": "meta.preprocessor.include.czet",
+          "match": "^\\s*#\\s*include\\b.*",
+          "captures": {
+            "0": { "name": "keyword.control.directive.include.czet" }
+          }
+        },
+        {
+          "name": "keyword.control.directive.czet",
+          "match": "^\\s*#\\s*(define|undef|if|ifdef|ifndef|elif|else|endif|error|pragma|line|warning)\\b"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.czet",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [{ "name": "constant.character.escape.czet", "match": "\\\\." }]
+        },
+        {
+          "name": "string.quoted.single.czet",
+          "begin": "'",
+          "end": "'",
+          "patterns": [{ "name": "constant.character.escape.czet", "match": "\\\\." }]
+        }
+      ]
+    },
+    "czet-keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.macro.czet",
+          "match": "\\b_Macro\\b"
+        },
+        {
+          "name": "keyword.other.reflect.czet",
+          "match": "\\b_Reflect\\b|\\b_Operator\\b"
+        },
+        {
+          "name": "keyword.control.defer.czet",
+          "match": "\\bdefer\\b"
+        },
+        {
+          "name": "keyword.other.constexpr.czet",
+          "match": "\\bconstexpr\\b"
+        },
+        {
+          "name": "keyword.control.czet",
+          "match": "\\b(if|else|switch|case|default|for|while|do|break|continue|goto|return|sizeof|_Alignof|_Generic)\\b"
+        },
+        {
+          "name": "storage.type.czet",
+          "match": "\\b(void|char|short|int|long|float|double|signed|unsigned|_Bool|_Complex|_Imaginary|_BitInt|size_t|bool)\\b"
+        },
+        {
+          "name": "storage.modifier.czet",
+          "match": "\\b(auto|register|static|extern|typedef|inline|const|volatile|restrict|_Atomic|_Thread_local|_Alignas|_Noreturn|_Static_assert)\\b"
+        },
+        {
+          "name": "storage.type.struct.czet",
+          "match": "\\b(struct|union|enum)\\b"
+        }
+      ]
+    },
+    "macro-def": {
+      "patterns": [
+        {
+          "name": "meta.macro.czet",
+          "begin": "\\b_Macro\\b\\s+([A-Za-z_][A-Za-z0-9_]*)",
+          "beginCaptures": {
+            "1": { "name": "entity.name.macro.czet" }
+          },
+          "end": ";",
+          "patterns": [
+            { "include": "#strings" },
+            { "include": "#comments" },
+            {
+              "name": "variable.parameter.macro.czet",
+              "match": "\\$[A-Za-z_][A-Za-z0-9_]*"
+            },
+            {
+              "name": "support.other.fragment.czet",
+              "match": "\\b(ident|expr|type|stmt|block|tokens|number|string|literal)\\b"
+            },
+            {
+              "name": "keyword.operator.repetition.czet",
+              "match": "\\$\\(|\\*|\\+|\\?"
+            }
+          ]
+        },
+        {
+          "name": "variable.parameter.macro.czet",
+          "match": "\\$[A-Za-z_][A-Za-z0-9_]*"
+        },
+        {
+          "name": "support.other.fragment.czet",
+          "match": "\\$(\\(|\\*|\\+|\\?)|:\\s*(ident|expr|type|stmt|block|tokens|number|string|literal)\\b"
+        }
+      ]
+    },
+    "reflect-op": {
+      "patterns": [
+        {
+          "name": "support.type.reflect.czet",
+          "match": "\\breflect_t\\b|\\breflect_field_t\\b"
+        },
+        {
+          "name": "variable.other.member.reflect.czet",
+          "match": "\\.(kind|size|align|name|count|elem|fields|offset|type)\\b"
+        }
+      ]
+    },
+    "types": {
+      "patterns": [
+        {
+          "name": "entity.name.type.generic.czet",
+          "match": "\\b([A-Za-z_][A-Za-z0-9_]*)\\s*(?=<[^=])"
+        },
+        {
+          "name": "storage.type.czet",
+          "match": "<utils/[a-z_]+\\.h>"
+        }
+      ]
+    },
+    "utils": {
+      "patterns": [
+        {
+          "name": "support.function.utils.czet",
+          "match": "\\b(arena_init|arena_alloc|arena_calloc|arena_used|arena_reset|arena_free|str_init|str_push_cstr|str_push_char|str_push_fmt|str_cstr|str_clear|str_free|slice_make|slice_len|slice_at|slice_sub|hmap_init|hmap_put|hmap_get|hmap_del|hmap_count|hmap_free|btree_new|btree_set|btree_get|btree_delete|btree_min|btree_max|btree_count|btree_free|critbit0_insert|critbit0_contains|critbit0_delete|critbit0_clear|critbit0_allprefixed|sm_save|sm_load|sm_save_r|sm_load_r|dbuf_init|dbuf_write|dbuf_read|tbuf_init|tbuf_write|tbuf_read|pool_create|pool_submit|pool_try_submit|pool_wait|pool_destroy|co_sched_init|co_spawn|co_run|co_sched_free|co_yield|tcp_listen|tcp_connect|tcp_accept|tcp_send_all|tcp_recv_all|tcp_port|tcp_close|ipc_server_open|ipc_server_close|ipc_client_open|ipc_client_close|ipc_send_all|ipc_recv_all)\\b"
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.czet",
+          "match": "\\b(0x[0-9a-fA-F_]+|0b[01_]+|0[0-7_]*|\\d[\\d_]*(\\.\\d+)?([eE][+-]?\\d+)?[uUlLfF]*)\\b"
+        }
+      ]
+    },
+    "functions": {
+      "patterns": [
+        {
+          "name": "entity.name.function.czet",
+          "match": "\\b([A-Za-z_][A-Za-z0-9_]*)(?=\\s*(<[^=<>]*>)?\\s*\\()"
+        }
+      ]
+    }
+  }
+}

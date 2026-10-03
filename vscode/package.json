@@ -1,0 +1,68 @@
+{
+  "name": "czet",
+  "displayName": "CZet",
+  "description": "CZet language support (.ct/.czet): grammar + mini LSP (lsp/czet-lsp.c)",
+  "version": "0.1.0",
+  "license": "GPL-3.0-or-later",
+  "publisher": "czet",
+  "engines": { "vscode": "^1.80.0" },
+  "categories": ["Programming Languages"],
+  "activationEvents": ["onLanguage:czet"],
+  "main": "./src/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "czet",
+        "aliases": ["CZet", "czet"],
+        "extensions": [".ct", ".czet"],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "czet",
+        "scopeName": "source.czet",
+        "path": "./syntaxes/czet.tmGrammar.json"
+      }
+    ],
+    "configuration": {
+      "title": "CZet",
+      "properties": {
+        "czet.lsp.path": {
+          "type": "string",
+          "default": "czet-lsp",
+          "description": "Ruta al binario czet-lsp (compilado de lsp/czet-lsp.c) o nombre en PATH."
+        },
+        "czet.lsp.args": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": [],
+          "description": "Args extra para czet-lsp (p. ej. [\"--no-czet\"])."
+        },
+        "czet.build.libc": {
+          "type": "string",
+          "enum": ["musl", "glibc"],
+          "default": "musl",
+          "description": "Libc del driver czet para la task de build."
+        }
+      }
+    },
+    "taskDefinitions": [
+      {
+        "type": "czet",
+        "required": ["file"],
+        "properties": {
+          "file": { "type": "string" },
+          "output": { "type": "string" },
+          "extraArgs": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "echo 'no build step (plain JS client)'"
+  },
+  "dependencies": {
+    "vscode-languageclient": "^9.0.1"
+  }
+}
